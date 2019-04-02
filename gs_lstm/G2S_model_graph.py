@@ -1,5 +1,6 @@
 import tensorflow as tf
 import graph_encoder_utils
+
 import padding_utils
 from tensorflow.python.ops import variable_scope
 import numpy as np
@@ -119,10 +120,12 @@ class ModelGraph(object):
         # [batch, class_num]
         prediction = tf.nn.softmax(tf.matmul(entity_states, w_linear) + b_linear)
         prediction = _clip_and_normalize(prediction, 1.0e-6)
+        self.prediction = prediction
         self.output = tf.argmax(prediction,axis=-1,output_type=tf.int32)
 
         ## calculating accuracy
         self.refs = tf.placeholder(tf.int32, [None,])
+
         self.accu = tf.reduce_sum(tf.cast(tf.equal(self.output,self.refs),dtype=tf.float32))
 
         ## calculating loss
@@ -182,11 +185,11 @@ class ModelGraph(object):
         if is_train:
             return sess.run([self.accu, self.loss, self.train_op], feed_dict)
         else:
-            return sess.run([self.accu, self.loss, self.output], feed_dict)
+            return sess.run([self.accu, self.loss, self.output,self.prediction], feed_dict)
 
 
 if __name__ == '__main__':
     summary = " Tokyo is the one of the biggest city in the world."
     reference = "The capital of Japan, Tokyo, is the center of Japanese economy."
-    print sentence_rouge(reference, summary)
+    print(sentence_rouge(reference, summary))
 

@@ -65,7 +65,7 @@ def evaluate(sess, valid_graph, devDataStream, options=None, suffix=''):
     dev_total = 0.0
     for batch_index in xrange(devDataStream.get_num_batch()): # for each batch
         cur_batch = devDataStream.get_batch(batch_index)
-        accu_value, loss_value, output_value = valid_graph.execute(sess, cur_batch, options, is_train=False)
+        accu_value, loss_value, output_value, _ = valid_graph.execute(sess, cur_batch, options, is_train=False)
         instances += cur_batch.instances
         outputs += output_value.flatten().tolist()
         dev_loss += loss_value
@@ -100,8 +100,8 @@ def main(_):
         trainset, trn_node, trn_in_neigh, trn_out_neigh, trn_sent = G2S_data_stream.read_nary_file(FLAGS.train_path, FLAGS)
 
     random.shuffle(trainset)
-    devset = trainset[:200]
-    trainset = trainset[200:]
+    devset = trainset[:FLAGS.dev_set_size]
+    trainset = trainset[FLAGS.dev_set_size:]
 
     print('Number of training samples: {}'.format(len(trainset)))
     print('Number of dev samples: {}'.format(len(devset)))
@@ -268,8 +268,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', type=str, help='Configuration file.')
 
-    #os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-    #os.environ["CUDA_VISIBLE_DEVICES"]="2"
+    os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+    os.environ["CUDA_VISIBLE_DEVICES"]="2"
 
     print("CUDA_VISIBLE_DEVICES " + os.environ['CUDA_VISIBLE_DEVICES'])
     FLAGS, unparsed = parser.parse_known_args()

@@ -1,5 +1,6 @@
 {
     "train_path": "data/train_list_0",
+    "bootstrap_path": "data/bootstrap_list_0",
     "output_path": "logs/result_c_m_0.json",
     "word_vec_path": "data/vocab_morph.wordvec.st",
     "suffix": "cross_mul_0",
@@ -8,7 +9,9 @@
     
     "word_format": "morph",
     "class_num": 5,
-    "only_single_sent": false,
+    "only_single_sent": true,
+    "dev_set_size": 100,
+    "tot_num_instances": 500,
 
     "batch_size": 8,
     "num_syntax_match_layer": 5,

@@ -5,7 +5,7 @@
 
 start=`date +%s`
 python G2S_evaluater.py --model_prefix logs/G2S.cross_mul_0 \
-        --in_path data/test_list_0 \
+        --in_path data/bootstrap_list_0 \
         --out_path logs/results_c_m_0.json
 
 end=`date +%s`

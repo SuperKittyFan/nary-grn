@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     print('Loading test set from {}.'.format(in_path))
     if FLAGS.infile_format == 'fof':
-        testset, _, _, _, _, init_set = G2S_data_stream.read_nary_from_fof_init(in_path, FLAGS)
+        testset, _, _, _, _ = G2S_data_stream.read_nary_from_fof(in_path, FLAGS)
     else:
         testset, _, _, _, _ = G2S_data_stream.read_nary_file(in_path, FLAGS)
     print('Number of samples: {}'.format(len(testset)))
@@ -93,6 +93,7 @@ if __name__ == '__main__':
         devDataStream.reset()
         instances = []
         outputs = []
+        max_prediction = []
         test_loss = 0.0
         test_right = 0.0
         test_total = 0.0
@@ -100,6 +101,8 @@ if __name__ == '__main__':
         for batch_index in xrange(devDataStream.get_num_batch()): # for each batch
             cur_batch = devDataStream.get_batch(batch_index)
             accu_value, loss_value, output_value, prediction_value = valid_graph.execute(sess, cur_batch, FLAGS, is_train=False)
+            # get the max value of the prediction
+            max_prediction += [max(p) for p in prediction_value]
             instances += cur_batch.instances
             outputs += output_value.flatten().tolist()
             test_loss += loss_value
